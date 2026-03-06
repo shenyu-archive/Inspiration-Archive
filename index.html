@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Archiwum Inspiracji</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #0e0c0a;
+      --paper: #f7f2e9;
+      --gold: #c9a84c;
+      --gold2: #e8c97a;
+      --sepia: #7a6545;
+      --muted: #5e5040;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--ink); color: var(--paper); font-family: 'Cormorant Garamond', serif; overflow-x: hidden; }
+
+    /* grain */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+      background-size: 180px;
+      pointer-events: none; z-index: 2; opacity: 0.5; mix-blend-mode: overlay;
+    }
+
+    /* starfield */
+    #starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    /* dust */
+    .dust { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .dust-p {
+      position: absolute; border-radius: 50%; background: var(--gold); opacity: 0;
+      animation: dust-float linear infinite;
+    }
+    @keyframes dust-float {
+      0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
+      10%  { opacity: 0.5; }
+      90%  { opacity: 0.25; }
+      100% { transform: translateY(-10vh) translateX(var(--dx)); opacity: 0; }
+    }
+
+    /* ══ HERO ══ */
+    .hero {
+      position: relative; z-index: 10;
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 5rem 2rem 8rem; overflow: hidden;
+    }
+    .hero__glow {
+      position: absolute; width: 900px; height: 900px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.10) 0%, rgba(201,168,76,0.04) 35%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      pointer-events: none; animation: glow-breathe 7s ease-in-out infinite;
+    }
+    @keyframes glow-breathe {
+      0%,100% { opacity:.7; transform:translate(-50%,-50%) scale(1); }
+      50%      { opacity:1;  transform:translate(-50%,-50%) scale(1.1); }
+    }
+    .hero__ring {
+      position: absolute; border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.12);
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      animation: ring-spin 60s linear infinite;
+    }
+    .hero__ring--a { width: 600px; height: 600px; }
+    .hero__ring--b { width: 420px; height: 420px; border-color: rgba(201,168,76,0.08); animation-duration: 40s; animation-direction: reverse; }
+    .hero__ring--a::before, .hero__ring--b::before {
+      content: ''; position: absolute; background: var(--gold); border-radius: 50%;
+      box-shadow: 0 0 12px 4px rgba(201,168,76,.5);
+    }
+    .hero__ring--a::before { width:8px; height:8px; top:-4px; left:50%; transform:translateX(-50%); }
+    .hero__ring--b::before { width:5px; height:5px; bottom:-2.5px; left:50%; transform:translateX(-50%); }
+    @keyframes ring-spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+    .hero__hline {
+      position: absolute; left:0; right:0; height:1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,.15) 20%, rgba(201,168,76,.3) 50%, rgba(201,168,76,.15) 80%, transparent 100%);
+      opacity:0; animation: fade-in 2s ease forwards;
+    }
+    .hero__vline {
+      position: absolute; top:0; bottom:0; width:1px;
+      background: linear-gradient(180deg, transparent, rgba(201,168,76,.2) 30%, rgba(201,168,76,.2) 70%, transparent);
+      opacity:0; animation: fade-in 2s .5s ease forwards;
+    }
+    @keyframes fade-in { to { opacity:1; } }
+
+    .hero__inner { position:relative; z-index:5; text-align:center; }
+
+    .hero__badge {
+      display:inline-flex; align-items:center; gap:1rem; margin-bottom:3.5rem;
+      opacity:0; animation: rise 1.2s .3s cubic-bezier(.22,1,.36,1) forwards;
+    }
+    .hero__badge-line { width:40px; height:1px; background:var(--gold); }
+    .hero__badge-text { font-family:'Cinzel',serif; font-size:.95rem; letter-spacing:.35em; color:var(--gold); text-transform:uppercase; }
+
+    .hero__monogram {
+      display:block; font-family:'Cinzel Decorative',serif; font-size:clamp(.9rem,3vw,1.3rem);
+      letter-spacing:.3em; color:var(--gold); margin-bottom:1.2rem;
+      opacity:0; animation: rise 1.2s .5s cubic-bezier(.22,1,.36,1) forwards;
+    }
+
+    .hero__title {
+      font-family:'Cinzel',serif; font-size:clamp(3rem,10vw,8rem); font-weight:900;
+      line-height:.95; letter-spacing:-.01em; color:var(--paper);
+      opacity:0; animation: rise 1.2s .6s cubic-bezier(.22,1,.36,1) forwards;
+      position:relative;
+    }
+    .hero__title em {
+      display:block; font-family:'Cormorant Garamond',serif; font-style:italic;
+      font-weight:300; font-size:.65em; color:var(--gold); letter-spacing:.05em; margin-top:.2em;
+    }
+    .hero__title::after {
+      content:attr(data-text); position:absolute; left:2px; top:0;
+      color:rgba(201,168,76,.08); animation:shimmer 8s 2s ease-in-out infinite; pointer-events:none;
+    }
+    @keyframes shimmer {
+      0%,90%,100% { opacity:0; transform:none; }
+      92% { opacity:1; transform:translateX(-2px) skewX(-1deg); }
+      94% { opacity:0; transform:translateX(2px); }
+      96% { opacity:1; transform:none; }
+    }
+
+    .hero__ornament {
+      display:flex; align-items:center; justify-content:center; gap:1rem; margin:2.5rem 0;
+      opacity:0; animation: rise 1.2s .9s cubic-bezier(.22,1,.36,1) forwards;
+    }
+    .hero__ornament-line { flex:1; max-width:120px; height:1px; }
+    .hero__ornament-line--l { background: linear-gradient(90deg,transparent,var(--gold)); }
+    .hero__ornament-line--r { background: linear-gradient(270deg,transparent,var(--gold)); }
+    .hero__ornament-glyph { font-size:1.1rem; color:var(--gold); }
+    .hero__ornament-glyph--sm { font-size:.6rem; color:var(--sepia); }
+
+    .hero__tagline {
+      font-family:'EB Garamond',serif; font-style:italic; font-weight:400;
+      font-size:clamp(1.2rem,2.5vw,1.7rem); color:rgba(247,242,233,.6);
+      max-width:480px; line-height:1.6; margin:0 auto 3.5rem;
+      opacity:0; animation: rise 1.2s 1s cubic-bezier(.22,1,.36,1) forwards;
+    }
+
+    .hero__cta {
+      display:flex; gap:1.2rem; justify-content:center; flex-wrap:wrap;
+      opacity:0; animation: rise 1.2s 1.2s cubic-bezier(.22,1,.36,1) forwards;
+    }
+
+    .btn {
+      display:inline-flex; align-items:center; gap:.7rem;
+      font-family:'Cinzel',serif; font-size:.68rem; letter-spacing:.22em; text-transform:uppercase;
+      text-decoration:none; padding:1.1rem 2.5rem; position:relative; overflow:hidden; transition:color .4s;
+    }
+    .btn svg { width:13px; height:13px; transition:transform .35s ease; position:relative; z-index:1; }
+    .btn span { position:relative; z-index:1; }
+    .btn:hover svg { transform:translateX(5px); }
+
+    .btn--gold { background:var(--gold); color:var(--ink); border:1px solid var(--gold); }
+    .btn--gold::before {
+      content:''; position:absolute; inset:0; background:var(--gold2);
+      transform:scaleX(0); transform-origin:left; transition:transform .4s cubic-bezier(.22,1,.36,1);
+    }
+    .btn--gold:hover::before { transform:scaleX(1); }
+
+    .btn--outline { background:transparent; color:var(--paper); border:1px solid rgba(247,242,233,.3); }
+    .btn--outline::before {
+      content:''; position:absolute; inset:0; background:rgba(247,242,233,.06);
+      transform:scaleX(0); transform-origin:left; transition:transform .4s cubic-bezier(.22,1,.36,1);
+    }
+    .btn--outline:hover::before { transform:scaleX(1); }
+    .btn--outline:hover { border-color:rgba(247,242,233,.6); }
+
+    @keyframes rise {
+      from { opacity:0; transform:translateY(28px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* scroll mouse */
+    .scroll-hint {
+      position:absolute; bottom:3rem; left:0; right:0;
+      display:flex; flex-direction:column; align-items:center; gap:.6rem;
+      opacity:0; animation:rise 1s 1.8s ease forwards;
+    }
+    .scroll-hint__text { font-family:'Cinzel',serif; font-size:.55rem; letter-spacing:.4em; color:rgba(201,168,76,.5); text-transform:uppercase; }
+    .scroll-hint__mouse { width:22px; height:36px; border:1px solid rgba(201,168,76,.3); border-radius:12px; display:flex; justify-content:center; padding-top:6px; }
+    .scroll-hint__wheel { width:2px; height:6px; background:var(--gold); border-radius:2px; animation:wheel-scroll 2s ease-in-out infinite; }
+    @keyframes wheel-scroll {
+      0%,100% { transform:translateY(0); opacity:1; }
+      60%      { transform:translateY(10px); opacity:0; }
+    }
+
+    /* ══ MARQUEE ══ */
+    .marquee-wrap { position:relative; z-index:10; overflow:hidden; padding:1.5rem 0; background:var(--gold); }
+    .marquee { display:flex; gap:4rem; animation:marquee-run 20s linear infinite; white-space:nowrap; }
+    .marquee span { font-family:'Cinzel',serif; font-size:.7rem; letter-spacing:.3em; text-transform:uppercase; color:var(--ink); }
+    .m-dot { opacity:.4; }
+    @keyframes marquee-run { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+
+    /* ══ MANIFESTO ══ */
+    .manifesto {
+      position:relative; z-index:10; padding:7rem 2rem; overflow:hidden; text-align:center;
+    }
+    .manifesto::before { content:''; position:absolute; top:0; bottom:0; left:50%; width:1px; background:linear-gradient(to bottom,transparent,rgba(201,168,76,.3),transparent); }
+    .manifesto__top-line, .manifesto__bot-line { position:absolute; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,.2),transparent); }
+    .manifesto__top-line { top:0; } .manifesto__bot-line { bottom:0; }
+    .manifesto__inner { max-width:720px; margin:0 auto; position:relative; z-index:1; }
+    .manifesto__eyebrow { font-family:'Cinzel',serif; font-size:.95rem; letter-spacing:.15em; color:var(--gold); text-transform:uppercase; display:block; margin-bottom:2.5rem; }
+    .manifesto__text { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(1.8rem,4vw,3rem); color:var(--paper); line-height:1.4; }
+    .manifesto__text strong { font-style:normal; font-weight:600; color:var(--gold); }
+
+    /* ══ CATEGORIES ══ */
+    .categories { position:relative; z-index:10; padding:10rem 2rem; }
+    .section-label { text-align:center; margin-bottom:5rem; }
+    .section-label__sup { font-family:'Cinzel',serif; font-size:.95rem; letter-spacing:.15em; color:var(--gold); text-transform:uppercase; display:block; margin-bottom:1rem; }
+    .section-label__title { font-family:'Cormorant Garamond',serif; font-size:clamp(2.2rem,5vw,4rem); font-weight:300; font-style:italic; color:var(--paper); }
+    .section-label__title strong { font-style:normal; font-weight:600; color:var(--gold); }
+
+    .cat-wrap {
+      max-width:1200px; margin:0 auto;
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:1px; background:rgba(201,168,76,.15); border:1px solid rgba(201,168,76,.15);
+    }
+    .cat-card { display:block; text-decoration:none; background:var(--ink); padding:3rem 2.5rem 4rem; position:relative; overflow:hidden; transition:background .5s; }
+    .cat-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(201,168,76,.12) 0%,transparent 60%); opacity:0; transition:opacity .5s; }
+    .cat-card:hover::before { opacity:1; }
+    .cat-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); transform:scaleX(0); transition:transform .5s cubic-bezier(.22,1,.36,1); }
+    .cat-card:hover::after { transform:scaleX(1); }
+    .cat-card__num { font-family:'Cinzel',serif; font-size:.75rem; letter-spacing:.4em; color:rgba(201,168,76,.4); display:block; margin-bottom:2rem; transition:color .4s; }
+    .cat-card:hover .cat-card__num { color:var(--gold); }
+    .cat-card__symbol { font-size:2.5rem; line-height:1; display:inline-block; margin-bottom:1.5rem; transition:transform .4s cubic-bezier(.34,1.56,.64,1); transform-origin:center; }
+    .cat-card:hover .cat-card__symbol { transform:scale(1.25); }
+    .cat-card__name { font-family:'Cinzel',serif; font-size:1rem; font-weight:600; letter-spacing:.05em; color:var(--paper); margin-bottom:1rem; transition:color .4s; }
+    .cat-card:hover .cat-card__name { color:var(--gold); }
+    .cat-card__text { font-family:'EB Garamond',serif; font-size:.95rem; color:rgba(247,242,233,.45); line-height:1.75; transition:color .4s; }
+    .cat-card:hover .cat-card__text { color:rgba(247,242,233,.7); }
+
+    /* ══ FOOTER ══ */
+    footer { position:relative; z-index:10; padding:5rem 2rem; text-align:center; border-top:1px solid rgba(201,168,76,.15); }
+    .footer__sigil { display:inline-block; width:48px; height:48px; margin-bottom:1.5rem; }
+    .footer__name { font-family:'Cinzel Decorative',serif; font-size:1.1rem; letter-spacing:.15em; color:var(--paper); display:block; margin-bottom:.5rem; }
+    .footer__sub { font-family:'EB Garamond',serif; font-style:italic; font-size:.9rem; color:rgba(201,168,76,.6); }
+
+    /* ══ REVEAL ══ */
+    .reveal { opacity:0; transform:translateY(30px); transition:opacity .9s ease,transform .9s cubic-bezier(.22,1,.36,1); }
+    .reveal.visible { opacity:1; transform:none; }
+
+    @media (max-width:768px) { .cat-wrap { grid-template-columns:1fr 1fr; } }
+    @media (max-width:500px) { .cat-wrap { grid-template-columns:1fr; } .hero__ring--a { width:300px; height:300px; } .hero__ring--b { width:200px; height:200px; } }
+  </style>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+  <div class="dust" id="dust"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__glow"></div>
+    <div class="hero__ring hero__ring--a"></div>
+    <div class="hero__ring hero__ring--b"></div>
+    <div class="hero__hline" style="top:25%; animation-delay:.8s;"></div>
+    <div class="hero__hline" style="top:75%; animation-delay:1s;"></div>
+    <div class="hero__vline" style="left:15%;"></div>
+    <div class="hero__vline" style="right:15%;"></div>
+
+    <div class="hero__inner">
+      <div class="hero__badge">
+        <div class="hero__badge-line"></div>
+        <span class="hero__badge-text">blog • eseje • refleksje</span>
+        <div class="hero__badge-line"></div>
+      </div>
+
+      <h1 class="hero__title" data-text="ARCHIWUM">
+        ARCHIWUM
+        <em>Inspiracji</em>
+      </h1>
+
+      <div class="hero__ornament">
+        <div class="hero__ornament-line hero__ornament-line--l"></div>
+        <span class="hero__ornament-glyph">✦</span>
+        <span class="hero__ornament-glyph hero__ornament-glyph--sm">✦</span>
+        <span class="hero__ornament-glyph">✦</span>
+        <div class="hero__ornament-line hero__ornament-line--r"></div>
+      </div>
+
+      <p class="hero__tagline">
+        Zainspiruj się. Zatrzymaj się. Przemyśl.
+      </p>
+
+      <div class="hero__cta">
+        <a href="wpisy.html" class="btn btn--gold">
+          <span>Czytaj wpisy</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#tematy" class="btn btn--outline">
+          <span>Odkryj tematy</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-hint__mouse"><div class="scroll-hint__wheel"></div></div>
+      <span class="scroll-hint__text">Przewiń</span>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee">
+      <span>Psychologia</span><span class="m-dot">✦</span>
+      <span>Filozofia</span><span class="m-dot">✦</span>
+      <span>Sztuka życia</span><span class="m-dot">✦</span>
+      <span>Rozwój</span><span class="m-dot">✦</span>
+      <span>Inspiracje</span><span class="m-dot">✦</span>
+      <span>Umysł</span><span class="m-dot">✦</span>
+      <span>Społeczeństwo</span><span class="m-dot">✦</span>
+      <span>Refleksja</span><span class="m-dot">✦</span>
+      <span>Psychologia</span><span class="m-dot">✦</span>
+      <span>Filozofia</span><span class="m-dot">✦</span>
+      <span>Sztuka życia</span><span class="m-dot">✦</span>
+      <span>Rozwój</span><span class="m-dot">✦</span>
+      <span>Inspiracje</span><span class="m-dot">✦</span>
+      <span>Umysł</span><span class="m-dot">✦</span>
+      <span>Społeczeństwo</span><span class="m-dot">✦</span>
+      <span>Refleksja</span><span class="m-dot">✦</span>
+    </div>
+  </div>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto">
+    <div class="manifesto__top-line"></div>
+    <div class="manifesto__bot-line"></div>
+    <div class="manifesto__inner reveal">
+      <span class="manifesto__eyebrow">Po co tu zaglądać?</span>
+      <p class="manifesto__text">
+        To miejsce dla tych, którzy chcą <strong><i>rozumieć głębiej</i></strong> &#8208; siebie, innych i świat, w którym żyjemy.
+      </p>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="categories" id="tematy">
+    <div class="section-label reveal">
+      <span class="section-label__sup">obszary</span>
+      <h2 class="section-label__title">O czym <strong><i>piszę</i></strong></h2>
+    </div>
+    <div class="cat-wrap">
+      <div class="cat-card reveal">
+        <span class="cat-card__num">01</span>
+        <span class="cat-card__symbol">🧠</span>
+        <h3 class="cat-card__name">Psychologia</h3>
+        <p class="cat-card__text">Mechanizmy umysłu, emocje i głębsze warstwy tego, kim jesteśmy.</p>
+      </div>
+      <div class="cat-card reveal">
+        <span class="cat-card__num">02</span>
+        <span class="cat-card__symbol">⚗️</span>
+        <h3 class="cat-card__name">Filozofia</h3>
+        <p class="cat-card__text">Pytania bez gotowych odpowiedzi. Sensy, wartości i sztuka myślenia.</p>
+      </div>
+      <div class="cat-card reveal">
+        <span class="cat-card__num">03</span>
+        <span class="cat-card__symbol">🌿</span>
+        <h3 class="cat-card__name">Rozwój</h3>
+        <p class="cat-card__text">Jak żyć świadomiej. Narzędzia, które naprawdę działają.</p>
+      </div>
+      <div class="cat-card reveal">
+        <span class="cat-card__num">04</span>
+        <span class="cat-card__symbol">🎭</span>
+        <h3 class="cat-card__name">Sztuka i życie</h3>
+        <p class="cat-card__text">Estetyka codzienności, kultura i piękno rzeczy nieoczywistych.</p>
+      </div>
+      <div class="cat-card reveal">
+        <span class="cat-card__num">05</span>
+        <span class="cat-card__symbol">🏛️</span>
+        <h3 class="cat-card__name">Społeczeństwo</h3>
+        <p class="cat-card__text">Relacje, struktury i to, jak kształtują nas od środka.</p>
+      </div>
+      <div class="cat-card reveal">
+        <span class="cat-card__num">06</span>
+        <span class="cat-card__symbol" style="color:var(--gold)">✦</span>
+        <h3 class="cat-card__name">Inspiracje</h3>
+        <p class="cat-card__text">Cytaty, obrazy i myśli, które zostały ze mną na długo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <svg class="footer__sigil" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="22" stroke="rgba(201,168,76,0.3)" stroke-width="0.8"/>
+      <circle cx="24" cy="24" r="14" stroke="rgba(201,168,76,0.5)" stroke-width="0.5"/>
+      <line x1="24" y1="2" x2="24" y2="46" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+      <line x1="2" y1="24" x2="46" y2="24" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+      <circle cx="24" cy="24" r="2.5" fill="#c9a84c"/>
+    </svg>
+    <span class="footer__name">Archiwum Inspiracji</span>
+    <p class="footer__sub">Zainspiruj się.</p>
+  </footer>
+
+  <script>
+    // starfield
+    (function(){
+      const c=document.getElementById('starfield'), ctx=c.getContext('2d');
+      let W,H,stars=[];
+      function resize(){ W=c.width=window.innerWidth; H=c.height=window.innerHeight; }
+      resize(); window.addEventListener('resize',resize);
+      for(let i=0;i<220;i++) stars.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,r:Math.random()*.9+.1,a:Math.random(),speed:Math.random()*.003+.001,phase:Math.random()*Math.PI*2});
+      function draw(t){
+        ctx.clearRect(0,0,W,H);
+        for(const s of stars){
+          const alpha=(Math.sin(t*s.speed*1000+s.phase)*.5+.5)*.7+.05;
+          ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+          ctx.fillStyle=`rgba(201,168,76,${alpha*s.a})`; ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+      requestAnimationFrame(draw);
+    })();
+
+    // dust
+    (function(){
+      const c=document.getElementById('dust');
+      for(let i=0;i<24;i++){
+        const p=document.createElement('div'); p.className='dust-p';
+        const dur=12+Math.random()*18, delay=-Math.random()*dur, dx=(Math.random()-.5)*120;
+        p.style.cssText=`left:${Math.random()*100}%;--dx:${dx}px;width:${Math.random()*2.5+.5}px;height:${Math.random()*2.5+.5}px;animation-duration:${dur}s;animation-delay:${delay}s;`;
+        c.appendChild(p);
+      }
+    })();
+
+    // scroll reveal
+    const obs=new IntersectionObserver(entries=>{
+      entries.forEach((e,i)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*100); obs.unobserve(e.target); } });
+    },{threshold:.12});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+    // anchor scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click',e=>{
+        const t=document.querySelector(a.getAttribute('href'));
+        if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}
+      });
+    });
+  </script>
+</body>
+</html>
